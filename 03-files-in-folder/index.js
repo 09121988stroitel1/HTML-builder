@@ -1,12 +1,12 @@
 const fs = require('fs');
 const path = require('path');
-fs.readdir('./03-files-in-folder/secret-folder', (err, data) => {
+fs.readdir('./03-files-in-folder/secret-folder',{ withFileTypes: true }, (err, data) => {
     if (err) throw err;
-    console.log(data);
-  
-    data.forEach( file => {
-        console.log(file+' - '+path.extname(file) +' - '+fs.statSync('./03-files-in-folder/secret-folder/'+file).size+"kb")
+
+         data.forEach( file => {
+     
+        if (!file.isDirectory()){ 
+        console.log(file.name+' - '+path.extname(file.name) +' - '+fs.statSync('./03-files-in-folder/secret-folder/'+file.name).size+"kb")
+        }
     })
 })
-// { withFileTypes: true }
-// file.slice(0, file.indexOf('.')))
