@@ -1,32 +1,21 @@
+
 const fs = require('fs');
 const path = require('path');
-const fsPromises = fs.promises;
-const { stdin, stdout} = process;
-
-
-const styles = '05-merge-styles/styles'
-const bundle = '05-merge-styles/project-dist/bundle.css'
-
-fs.readdir(styles, { withFileTypes: true }, (err, data) => {
-    if (err) throw err;
-    let arr = []
-    data.forEach( file => {
-        if (!file.isDirectory() || (file.name).split('.').pop() === 'css' ) {
-        fs.readFile(path.join(styles, file.name),  "utf8", (err, dat) => {
-            if (err) throw err;
-           
-            arr += dat
-            
-             fs.writeFile(bundle, arr , (err) => {
-    if(err) throw err;
-}); 
-
-        })
-     
+const stylesPath = path.join(__dirname, 'styles');
+const mainPath = path.join(__dirname, 'project-dist');
+const output = fs.createWriteStream(path.join(mainPath, 'bundle.css'));
+fs.readdir(stylesPath, (err, files) => {
+  if (err) throw err;
+  for (let i = 0; i < files.length; i++) {
+    let extension = path.extname(files[i]).split('.').pop();
+    if (extension === 'css') {
+      const input = fs.createReadStream(path.join(stylesPath, files[i]));
+      input.on('data', data => {
+        output.write(data.toString() + '\n');
+      });
     }
-}); 
-  
-    })
- 
-    
+  }
+});
+
+
 

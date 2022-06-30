@@ -1,32 +1,31 @@
 
+
 const fs = require('fs');
 const path = require('path');
-const fsPromises = fs.promises;
-const { stdin, stdout} = process;
+const oldPath = path.join(__dirname, 'files');
+const newPath = path.join(__dirname, 'files-copy');
 
-fsPromises.mkdir('./04-copy-directory/copy files', { recursive: true })
-const files = './04-copy-directory/files'
-const copyFiles = './04-copy-directory/copy files'
-
-
-function copyDir () {
-    fs.readdir(files, (err, data) => {
-        if (err) throw err;
-        data.forEach( file => {
-            console.log(file);  
-          
-       fs.copyFile(path.join(files, file), path.join(copyFiles, file), (err) => {
-    if (err) {
-      console.log("Error Found:", err);
-    }
- 
-  }); 
-        })
-   
-    }) 
-}
-copyDir()
+fs.mkdir(newPath, {
+  recursive: true
+}, err => {
+  if (err) throw err;
+});
+fs.readdir(newPath, (err, files) => {
+  for (let i = 0; i < files.length; i++) {
+    fs.unlink(newPath + '/' + files[i], err => {
+      if (err) throw err;
+    });
+  }
+});
+fs.readdir(oldPath, (err, files) => {
+  if (err) throw err;
+  for (let i = 0; i < files.length; i++) {
+    fs.copyFile(oldPath + '/' + files[i], newPath + '/' + files[i], err => {
+      if (err) throw err;
+    });
+  }
+});
 
 
 
-
+  

@@ -1,27 +1,35 @@
 
-const fs = require('fs');
-const path = require('path');
-const { stdin, stdout} = process;
- 
-stdout.write('Ведите текст\n');
-
-process.on('SIGINT', ()=>  {
-    console.log(`Exit on keypress"ctr + c"`)
-    process.exit();
-});
- stdin.on('data', (dat) => {
-    let name = dat.toString();
- 
-    if (name.trim() === 'exit') {
-        console.log(`Exit when typing a word "ext"`);
-        process.exit();
-    };
-    let date = ''
-      date += dat
-      fs.appendFile("02-write-file/hello.txt", date , (err) => {
-        if(err) throw err;
-    });   
-      });
   
 
+         
 
+const fs = require('fs');
+const readline = require('readline');
+const { stdin: input, stdout: output } = require('process');
+const path = require('path');
+
+const fileLocation = path.join(__dirname, 'text.txt');
+
+const rl = readline.createInterface({ input, output });
+const writeStream = fs.createWriteStream(fileLocation, 'utf8');
+console.log('Hi! Ask your question:');
+rl.on('line', (input) => {
+  if(input !== 'exit') {
+    writeStream.write(`${input}\n`);
+  } else {
+    console.log('Goodbye!');
+    rl.close();
+  }
+});
+
+rl.on('SIGINT', () => {
+  console.log('Goodbye!');
+  rl.close();
+});
+
+ 
+
+
+
+
+            
